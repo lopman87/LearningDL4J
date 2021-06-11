@@ -59,7 +59,7 @@ public class IrisClassification {
         } catch (Exception e) {
             Thread.dumpStack();
             new Exception("Stack trace").printStackTrace();
-            System.out.println("Error: " + e.getLocalizedMessage());
+            System.out.println("Error : " + e.getLocalizedMessage());
         }
     }
 
