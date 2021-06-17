@@ -37,12 +37,13 @@ public class IrisClassification {
     }
 
     private static void loadData() {
-        try(RecordReader recordReader = new CSVRecordReader(0,',')) {
+        try{
+            RecordReader recordReader = new CSVRecordReader(0,',');
             recordReader.initialize(new FileSplit(
                     new ClassPathResource("iris.csv").getFile()
             ));
 
-            DataSetIterator iterator = new RecordReaderDataSetIterator(recordReader, 150, FEATURES_COUNT, CLASSES_COUNT);
+            DataSetIterator iterator = new RecordReaderDataSetIterator(recordReader, 160, FEATURES_COUNT, CLASSES_COUNT);
             DataSet allData = iterator.next();
             allData.shuffle(123);
 
@@ -57,9 +58,7 @@ public class IrisClassification {
             irisNNetwork(trainingData, testingData);
 
         } catch (Exception e) {
-            Thread.dumpStack();
-            new Exception("Stack trace").printStackTrace();
-            System.out.println("Error: " + e.getLocalizedMessage());
+            e.printStackTrace();
         }
     }
 
