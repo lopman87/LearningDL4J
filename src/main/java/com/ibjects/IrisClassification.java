@@ -19,6 +19,7 @@ import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 import org.nd4j.linalg.io.ClassPathResource;
 import org.nd4j.linalg.learning.config.Nesterovs;
+import org.nd4j.linalg.learning.config.Sgd;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.apache.log4j.BasicConfigurator;
 public class IrisClassification {
@@ -43,7 +44,7 @@ public class IrisClassification {
                     new ClassPathResource("iris.csv").getFile()
             ));
 
-            DataSetIterator iterator = new RecordReaderDataSetIterator(recordReader, 160, FEATURES_COUNT, CLASSES_COUNT);
+            DataSetIterator iterator = new RecordReaderDataSetIterator(recordReader, 150, FEATURES_COUNT, CLASSES_COUNT);
             DataSet allData = iterator.next();
             allData.shuffle(123);
 
@@ -78,7 +79,29 @@ public class IrisClassification {
                 .backprop(true).pretrain(false)
                 .build();
 
-        MultiLayerNetwork model = new MultiLayerNetwork(configuration);
+        final int numInputs = 4;
+        int outputNum = 3;
+        long seed = 6;
+
+
+        System.out.println("Build model....");
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+                .seed(seed)
+                .activation(Activation.TANH)
+                .weightInit(WeightInit.XAVIER)
+                .updater(new Sgd(0.1))
+                .l2(1e-4)
+                .list()
+                .layer(new DenseLayer.Builder().nIn(numInputs).nOut(3)
+                        .build())
+                .layer(new DenseLayer.Builder().nIn(3).nOut(3)
+                        .build())
+                .layer( new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .activation(Activation.SOFTMAX) //Override the global TANH activation with softmax for this layer
+                        .nIn(3).nOut(outputNum).build())
+                .build();
+
+        MultiLayerNetwork model = new MultiLayerNetwork(conf);
         model.init();
         for(int i=0; i<1000; i++ ) {
             model.fit(trainingData);
