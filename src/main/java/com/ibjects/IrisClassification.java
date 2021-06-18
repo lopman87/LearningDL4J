@@ -73,7 +73,7 @@ public class IrisClassification {
                 .layer(0, new DenseLayer.Builder().nIn(FEATURES_COUNT).nOut(3).build())
                 .layer(1, new DenseLayer.Builder().nIn(3).nOut(3).build())
                 .layer(2, new OutputLayer.Builder(
-                        LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD).activation(Activation.SOFTMAX)
+                        LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD).activation(Activation.SIGMOID)
                         .nIn(3).nOut(CLASSES_COUNT).build())
                 .backprop(true).pretrain(false)
                 .build();
