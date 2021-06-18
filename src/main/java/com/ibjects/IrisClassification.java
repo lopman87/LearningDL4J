@@ -80,7 +80,9 @@ public class IrisClassification {
 
         MultiLayerNetwork model = new MultiLayerNetwork(configuration);
         model.init();
-        model.fit(trainingData);
+        for(int i=0; i<1000; i++ ) {
+            model.fit(trainingData);
+        }
 
         INDArray output = model.output(testData.getFeatureMatrix());
         Evaluation eval = new Evaluation(3);
